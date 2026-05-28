@@ -1,0 +1,232 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--c1:#0f172a;--c2:#1e293b;--c3:#334155;--accent:#38bdf8;--accent2:#818cf8;--accent3:#34d399;--accent4:#fb923c;--accent5:#f472b6;--accent6:#facc15;--bg:#0f172a;--card:#1e293b;--border:#334155;--text:#e2e8f0;--muted:#94a3b8}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;padding:0;min-height:100vh}
+.wrap{padding:1.5rem 1rem 2rem}
+.header{text-align:center;margin-bottom:1.5rem}
+.header h1{font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;color:#f1f5f9}
+.header p{font-size:0.8rem;color:var(--muted);margin-top:4px}
+.cats{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:1.5rem}
+.cat-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:0.75rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.cat-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cat-btn.active{color:#0f172a;border-color:transparent;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-2px);border-color:#475569}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;border-radius:2px 2px 0 0}
+.card.col-sky::before{background:#38bdf8}
+.card.col-violet::before{background:#818cf8}
+.card.col-emerald::before{background:#34d399}
+.card.col-orange::before{background:#fb923c}
+.card.col-pink::before{background:#f472b6}
+.card.col-yellow::before{background:#facc15}
+.card.col-red::before{background:#f87171}
+.kbd-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;align-items:center}
+kbd{display:inline-flex;align-items:center;padding:3px 7px;background:#0f172a;border:1px solid #475569;border-bottom:2.5px solid #475569;border-radius:5px;font-size:0.7rem;font-weight:600;color:#e2e8f0;font-family:'Courier New',monospace;white-space:nowrap}
+.plus{color:#64748b;font-size:0.65rem;margin:0 1px}
+.desc{font-size:0.72rem;color:var(--muted);line-height:1.45}
+.count-badge{display:inline-block;font-size:0.65rem;background:#1e293b;border:1px solid var(--border);border-radius:10px;padding:1px 7px;color:var(--muted);margin-left:6px;vertical-align:middle}
+.section-title{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;padding-left:2px}
+.no-results{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:0.85rem}
+.search-wrap{position:relative;max-width:320px;margin:0 auto 1.2rem}
+.search-wrap input{width:100%;padding:8px 14px 8px 36px;background:#1e293b;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.8rem;outline:none}
+.search-wrap input:focus{border-color:#475569}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+</style>
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Windows keyboard shortcuts reference, organized by category</h2>
+<div class="wrap">
+<div class="header">
+  <h1><i class="ti ti-keyboard" aria-hidden="true" style="font-size:1.1em;vertical-align:-2px;margin-right:6px;color:#38bdf8"></i>Windows Shortcuts</h1>
+  <p>Click any category · browse all shortcuts instantly</p>
+</div>
+<div class="search-wrap">
+  <i class="ti ti-search search-icon" aria-hidden="true"></i>
+  <input type="text" id="search" placeholder="Search shortcuts..." autocomplete="off">
+</div>
+<div class="cats" id="cats"></div>
+<div id="section-label" class="section-title"></div>
+<div class="grid" id="grid"></div>
+</div>
+<script>
+const DATA=[
+  {cat:"Global & Desktop",col:"col-sky",shortcuts:[
+    {keys:["Alt","F4"],desc:"Close active window (or power options if none open)"},
+    {keys:["Alt","Tab"],desc:"Cycle through open windows (hold Alt, tap Tab for thumbnails)"},
+    {keys:["Alt","Esc"],desc:"Cycle windows in open order, one-by-one without thumbnails"},
+    {keys:["Alt","Shift","Esc"],desc:"Reverse cycle through windows"},
+    {keys:["Alt","Space"],desc:"Open window menu (restore, move, size, minimize, maximize, close)"},
+    {keys:["Ctrl","Esc"],desc:"Open / close the Start menu"},
+    {keys:["Ctrl","Alt","Del"],desc:"Open security screen: lock, switch user, sign out, Task Manager"},
+    {keys:["Ctrl","Shift","Esc"],desc:"Directly open Task Manager"},
+    {keys:["Ctrl","F4"],desc:"Close active document (leaves the app open)"},
+    {keys:["PrtScr"],desc:"Open Snipping Tool / screenshot dashboard"},
+    {keys:["Win","Shift","S"],desc:"Snip a specific screen region"},
+    {keys:["Shift ×5"],desc:"Toggle Sticky Keys on/off"},
+    {keys:["Right Shift (8s)"],desc:"Toggle Filter Keys on/off"},
+  ]},
+  {cat:"Win Key",col:"col-violet",shortcuts:[
+    {keys:["Win","D"],desc:"Show/hide desktop — minimize all windows"},
+    {keys:["Win","E"],desc:"Open File Explorer"},
+    {keys:["Win","I"],desc:"Open Settings"},
+    {keys:["Win","L"],desc:"Lock the PC or switch user"},
+    {keys:["Win","M"],desc:"Minimize all windows"},
+    {keys:["Win","Shift","M"],desc:"Restore all minimized windows"},
+    {keys:["Win","N"],desc:"Open Notification center and calendar"},
+    {keys:["Win","P"],desc:"Project screen / display mode options"},
+    {keys:["Win","R"],desc:"Open the Run dialog"},
+    {keys:["Win","S"],desc:"Open Search"},
+    {keys:["Win","U"],desc:"Open Accessibility settings"},
+    {keys:["Win","V"],desc:"Open Clipboard history (enable first)"},
+    {keys:["Win","X"],desc:"Open Quick Link (power user) menu"},
+    {keys:["Win","Z"],desc:"Open Snap Layouts (Windows 11)"},
+    {keys:["Win",","],desc:"Peek at desktop while holding keys"},
+    {keys:["Win","A"],desc:"Open Action Center / Notification panel"},
+    {keys:["Win","G"],desc:"Xbox Game Bar — resources, capture, audio, performance"},
+    {keys:["Win","K"],desc:"Open Cast — connect to wireless displays"},
+    {keys:["Win","H"],desc:"Start voice dictation"},
+    {keys:["Win","Shift","T"],desc:"Text Extractor — copy text from anywhere on screen"},
+    {keys:["Win","Shift","A"],desc:"Circle to Search"},
+    {keys:["Win","."],desc:"Open emoji picker panel"},
+    {keys:["Win","B"],desc:"Focus first notification area icon (navigate with arrows)"},
+    {keys:["Win","Home"],desc:"Minimize all windows except the active one"},
+    {keys:["Win","PrtScn"],desc:"Full screen screenshot saved to Pictures\\Screenshots"},
+  ]},
+  {cat:"Window Positioning",col:"col-emerald",shortcuts:[
+    {keys:["Win","↑"],desc:"Maximize window; if snapped, stretch it vertically"},
+    {keys:["Win","↓"],desc:"Minimize or restore-down a maximized window"},
+    {keys:["Win","←"],desc:"Snap window to left half of screen"},
+    {keys:["Win","→"],desc:"Snap window to right half of screen"},
+    {keys:["Win","Alt","↑"],desc:"Snap active window to top half"},
+    {keys:["Win","Alt","↓"],desc:"Snap active window to bottom half"},
+    {keys:["Win","Shift","←"],desc:"Move active window to left monitor"},
+    {keys:["Win","Shift","→"],desc:"Move active window to right monitor"},
+  ]},
+  {cat:"Virtual Desktops",col:"col-orange",shortcuts:[
+    {keys:["Win","Tab"],desc:"Open Task View — see all desktops and open windows"},
+    {keys:["Win","Ctrl","D"],desc:"Create a new virtual desktop and switch to it"},
+    {keys:["Win","Ctrl","←"],desc:"Switch to the desktop on the left"},
+    {keys:["Win","Ctrl","→"],desc:"Switch to the desktop on the right"},
+    {keys:["Win","Ctrl","F4"],desc:"Close the current virtual desktop"},
+  ]},
+  {cat:"Taskbar",col:"col-pink",shortcuts:[
+    {keys:["Win","[1–9]"],desc:"Launch or switch to app pinned at that taskbar position"},
+    {keys:["Win","Shift","[1–9]"],desc:"Open a new instance of that pinned app"},
+    {keys:["Win","Ctrl","[1–9]"],desc:"Switch to last active window of that app group"},
+    {keys:["Win","Alt","[1–9]"],desc:"Open the jump list for that pinned app"},
+    {keys:["Win","T"],desc:"Cycle forward through apps on the taskbar"},
+    {keys:["Win","Shift","T"],desc:"Cycle backward through taskbar apps"},
+    {keys:["Ctrl","Click"],desc:"Cycle through windows of a grouped app on taskbar"},
+    {keys:["Shift","Click"],desc:"Open a new instance of the clicked app"},
+    {keys:["Shift","Right-Click"],desc:"Show window menu: move, resize, close"},
+  ]},
+  {cat:"Accessibility",col:"col-yellow",shortcuts:[
+    {keys:["Win","U"],desc:"Open Ease of Access / Accessibility settings"},
+    {keys:["Win","+"],desc:"Turn on Magnifier (zoom in)"},
+    {keys:["Win","Esc"],desc:"Turn off Magnifier"},
+    {keys:["Win","Ctrl","L"],desc:"Live Captions — real-time on-screen captions"},
+    {keys:["Win","Ctrl","C"],desc:"Toggle Color Filters"},
+    {keys:["Win","Ctrl","O"],desc:"Open On-Screen Keyboard"},
+    {keys:["Win","Ctrl","Enter"],desc:"Start Narrator screen reader"},
+    {keys:["Win","Ctrl","S"],desc:"Voice Access"},
+    {keys:["Left Alt","Left Shift","PrtScr"],desc:"Toggle high contrast themes"},
+    {keys:["Win","Shift","V"],desc:"Cycle through notifications on the notification bar"},
+  ]},
+  {cat:"Essentials",col:"col-red",shortcuts:[
+    {keys:["Ctrl","C"],desc:"Copy selected text or item"},
+    {keys:["Ctrl","V"],desc:"Paste from clipboard"},
+    {keys:["Ctrl","X"],desc:"Cut selected text or item"},
+    {keys:["Ctrl","Z"],desc:"Undo last action"},
+    {keys:["Ctrl","Y"],desc:"Redo action"},
+    {keys:["Ctrl","A"],desc:"Select all"},
+    {keys:["Tab"],desc:"Move focus forward in dialogs and forms"},
+    {keys:["Esc"],desc:"Cancel or close a dialog"},
+    {keys:["Enter"],desc:"Accept dialog or activate the default button"},
+    {keys:["F1"],desc:"Help"},
+    {keys:["F2"],desc:"Rename selected item"},
+    {keys:["F3"],desc:"Search / Find"},
+    {keys:["F4"],desc:"Open address bar in File Explorer"},
+    {keys:["F5"],desc:"Refresh"},
+    {keys:["F6"],desc:"Select the address bar"},
+    {keys:["F7"],desc:"Spell check (Word / Excel)"},
+    {keys:["F8"],desc:"Safe Mode (during boot)"},
+    {keys:["F9"],desc:"Recalculate / refresh (Word / Excel)"},
+    {keys:["F10"],desc:"Open the menu bar"},
+    {keys:["F11"],desc:"Toggle full screen"},
+    {keys:["F12"],desc:"Save As / Open Developer Tools"},
+    {keys:["Win","Ctrl","Q"],desc:"Quick Assist — remote help tool"},
+    {keys:["Win","Ctrl","F"],desc:"Search PCs on the network"},
+    {keys:["Win","Spacebar"],desc:"Switch input language / keyboard layout forward"},
+    {keys:["Win","Shift","Spacebar"],desc:"Switch input language backward"},
+  ]},
+];
+
+const ACCENT_MAP={
+  "col-sky":"#38bdf8","col-violet":"#818cf8","col-emerald":"#34d399",
+  "col-orange":"#fb923c","col-pink":"#f472b6","col-yellow":"#facc15","col-red":"#f87171"
+};
+
+let activeCat="All";
+let searchVal="";
+
+function renderKeys(keys){
+  return keys.map((k,i)=>`<kbd>${k}</kbd>${i<keys.length-1?'<span class="plus">+</span>':''}`).join('');
+}
+
+function getFiltered(){
+  let cards=[];
+  DATA.forEach(cat=>{
+    cat.shortcuts.forEach(s=>{
+      if(activeCat!=="All" && cat.cat!==activeCat) return;
+      if(searchVal){
+        const q=searchVal.toLowerCase();
+        const inKeys=s.keys.join(' ').toLowerCase().includes(q);
+        const inDesc=s.desc.toLowerCase().includes(q);
+        if(!inKeys&&!inDesc) return;
+      }
+      cards.push({...s,cat:cat.cat,col:cat.col});
+    });
+  });
+  return cards;
+}
+
+function renderCats(){
+  const catsEl=document.getElementById('cats');
+  const all=['All',...DATA.map(d=>d.cat)];
+  catsEl.innerHTML=all.map(c=>{
+    const col=DATA.find(d=>d.cat===c)?.col||'';
+    const acc=ACCENT_MAP[col]||'#38bdf8';
+    const isActive=activeCat===c;
+    const count=c==='All'?DATA.reduce((a,d)=>a+d.shortcuts.length,0):DATA.find(d=>d.cat===c)?.shortcuts.length||0;
+    const style=isActive?`background:${acc};color:#0f172a;border-color:${acc}`:'';
+    return `<button class="cat-btn${isActive?' active':''}" style="${style}" onclick="setCat('${c}')">${c}<span class="count-badge" style="${isActive?'background:rgba(0,0,0,0.15);border:none;color:#0f172a':''}">${count}</span></button>`;
+  }).join('');
+}
+
+function renderGrid(){
+  const cards=getFiltered();
+  const grid=document.getElementById('grid');
+  const label=document.getElementById('section-label');
+  label.textContent=activeCat==='All'?`All shortcuts (${cards.length})`:`${activeCat} — ${cards.length} shortcut${cards.length!==1?'s':''}`;
+  if(!cards.length){
+    grid.innerHTML='<div class="no-results" style="grid-column:1/-1"><i class="ti ti-mood-sad" style="font-size:2rem;display:block;margin-bottom:8px;color:#475569"></i>No shortcuts found</div>';
+    return;
+  }
+  grid.innerHTML=cards.map(s=>`
+    <div class="card ${s.col}">
+      <div class="kbd-row">${renderKeys(s.keys)}</div>
+      <div class="desc">${s.desc}</div>
+    </div>
+  `).join('');
+}
+
+function setCat(c){activeCat=c;renderCats();renderGrid()}
+
+document.getElementById('search').addEventListener('input',function(){
+  searchVal=this.value.trim();
+  if(searchVal&&activeCat!=='All'){activeCat='All';} 
+  renderCats();renderGrid();
+});
+
+renderCats();renderGrid();
+</script>
